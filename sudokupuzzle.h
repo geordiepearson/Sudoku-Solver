@@ -25,6 +25,10 @@ private slots:
 
     void updateTime();
 
+    void updateModel();
+
+    void on_SolveGame_clicked();
+
 private:
     Ui::SudokuPuzzle* ui;
     SudokuGame sudokuGame;
@@ -33,8 +37,8 @@ private:
     bool isPaused = false;
     qint64 elapsedTime = 0;
     QIntValidator* digitFilter;
-    void setBoard();
-
+    void resetBoard(QList<QLineEdit *> childList);
+    void initialiseBoard(QList<QLineEdit *> childList);
 
 };
 

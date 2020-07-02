@@ -21,12 +21,12 @@ void MainMenu::on_StartButton_clicked() {
 }
 
 
-
 void MainMenu::on_CreateButton_clicked() {
-
+	
 }
 
 
 void MainMenu::on_LoadButton_clicked() {
-    QFileDialog::getOpenFileNames(this, tr("Open File"),"/path/to/file/",tr("Text Files (*.txt)"));
+    QFileDialog::getOpenFileNames(this, tr("Open File"), "/path/to/file/", 
+    	tr("Text Files (*.txt)"));
 }

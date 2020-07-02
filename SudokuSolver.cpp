@@ -137,46 +137,47 @@ void SudokuSolver::solveSquare(int squareIndex, std::vector<int>
 	}
 }
 
-void SudokuSolver::solveBoard(int startingIndex, std::vector<int> &board, 
-	std::vector<int> &givenIndexes) {
+void SudokuSolver::solveBoard(int startingIndex, std::vector<int> &startBoard, 
+	std::vector<int> &currentBoard) {
 	// Vector to store the valid values a square can take
 	std::vector<int> potentialValues;
 	if (isSolved == true) {
 		return;
 	}
+	
 	// If the square hasn't been solved for, solve for possible values.
 	// For each value, try to solve for the next square and repeat this
 	// process until the solution is found.
-	if (board[startingIndex] == 0) {
-		solveSquare(startingIndex, potentialValues, board);
+	if (currentBoard[startingIndex] == 0) {
+		solveSquare(startingIndex, potentialValues, currentBoard);
 		for (int potentialValue: potentialValues) {
 			if (isSolved == true) {
 				return;
 			}
 			// If there is a potential valid value, clears all values 
-			// past the current sqaure that weren't orginally given.
+			// past the current square that weren't orginally given.
 			if (potentialValue != 0) {
-				for (int square = startingIndex; square <BOARD_SIZE; square++) {
-					if (std::find(givenIndexes.begin(), givenIndexes.end(),
-					 square) == givenIndexes.end()) {
-						board[square] = 0;
+				for (int square = startingIndex; square < BOARD_SIZE; square++) {
+					if (startBoard[square] == 0) {
+						currentBoard[square] = 0;
 					}
 				}
 				// Sets the current square to the current potential 
 				// value and checks if the puzzle is solved
-				board[startingIndex] = potentialValue;
-				if (std::find(board.begin(), board.end(), 0) == board.end()) {
+				currentBoard[startingIndex] = potentialValue;
+				if (std::find(currentBoard.begin(), currentBoard.end(), 0) == 
+					currentBoard.end()) {
 					isSolved = true;
 					return;
 				}
 				// Solves the next square of the puzzle with the 
 				// current value placed in the square
-				solveBoard(startingIndex + 1, board, givenIndexes);
+				solveBoard(startingIndex + 1, startBoard, currentBoard);
 			} 
 		}
 	// Solves for the next square if the current square is already 
 	// solved for	
 	} else {
-		solveBoard(startingIndex + 1, board, givenIndexes);
+		solveBoard(startingIndex + 1, startBoard, currentBoard);
 	}
 }

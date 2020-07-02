@@ -58,11 +58,10 @@ public:
 	// Parameters:
 	//  - startingIndex: The index on the Sudoku board to start solving 
 	// 	  from
-	//  - board: The current Sudoku board
-	//  - givenIndexes: The indexes of the Sudoku board that are originally 
-	//    given in the puzzle
-	void solveBoard(int startingIndex, std::vector<int> &board, 
-		std::vector<int> &givenIndexes);
+	//  - startBoard: The sudoku board at the start of the puzzle
+	//  - currentBoard: The current Sudoku board
+	void solveBoard(int startingIndex, std::vector<int> &startBoard, 
+		std::vector<int> &currentBoard);
 };
 
 #endif /*SUDOKUSOLVE_H_*/
