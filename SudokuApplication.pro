@@ -17,6 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     SudokuGame.cpp \
+    SudokuGenerator.cpp \
     SudokuSolver.cpp \
     main.cpp \
     mainmenu.cpp \
@@ -24,6 +25,7 @@ SOURCES += \
 
 HEADERS += \
     SudokuGame.h \
+    SudokuGenerator.h \
     mainmenu.h \
     sudokupuzzle.h
 

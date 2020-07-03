@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 #include <QApplication>
+#include <QMessageBox>
 
 /*
     Check for win UI
@@ -19,11 +20,8 @@ SudokuPuzzle::SudokuPuzzle(QWidget *parent):
     ui(new Ui::SudokuPuzzle) {
     ui->setupUi(this);
 
-    QWidget* boardWidget = centralWidget()->findChild<QWidget*>("widget");
-    QList<QLineEdit *> childList = boardWidget->findChildren<QLineEdit*>();
-
-    initialiseBoard(childList);
-
+    this->sudokuSquares = (centralWidget()->findChild<QWidget*>("widget"))->findChildren<QLineEdit*>();
+    initialiseBoard();
     timer = new QTimer();
     connect(timer, SIGNAL(timeout()), SLOT(updateTime()));
     timer->start(100);
@@ -34,73 +32,69 @@ SudokuPuzzle::~SudokuPuzzle() {
     delete ui;
 }
 
-void SudokuPuzzle::initialiseBoard(QList<QLineEdit *> childList) {
-    for (QLineEdit* child: childList) {
-        child->setValidator(new QRegExpValidator(QRegExp("[1-9]")));
-        int square;
-        if (child->objectName().length() == 7) {
-            square = child->objectName().right(1).toInt();
+int SudokuPuzzle::objectToIndex(QLineEdit* square) {
+    int squareIndex;
+        if (square->objectName().length() == 7) {
+            squareIndex = square->objectName().right(1).toInt();
         } else {
-            square = child->objectName().right(2).toInt();
+            squareIndex = square->objectName().right(2).toInt();
         }
-
-        if (sudokuGame.startBoard[square] != 0) {
-            child->setText((QString::fromStdString(std::to_string(sudokuGame.startBoard[square]))));
-            child->setStyleSheet("color:blue");
-            child->setReadOnly(true);
-        }
-        connect(child, SIGNAL(textEdited(const QString&)), SLOT(updateModel()));
-
-    }
-    resetBoard(childList);
+    return squareIndex;
 }
 
-void SudokuPuzzle::resetBoard(QList<QLineEdit *> childList) {
-    for (QLineEdit* child : childList) {
-        int square;
-        if (child->objectName().length() == 7) {
-            square = child->objectName().right(1).toInt();
-        } else {
-            square = child->objectName().right(2).toInt();
+void SudokuPuzzle::initialiseBoard() {
+    int squareIndex;
+    for (QLineEdit* square: sudokuSquares) {
+        square->setValidator(new QRegExpValidator(QRegExp("[1-9]")));
+        squareIndex = objectToIndex(square);
+        if (sudokuGame.startBoard[squareIndex] != 0) {
+            square->setText((QString::fromStdString(std::to_string(sudokuGame.startBoard[squareIndex]))));
+            square->setStyleSheet("color:blue");
+            square->setReadOnly(true);
         }
+        connect(square, SIGNAL(textEdited(const QString&)), SLOT(updateModel()));
+    }
+    setBoard();
+}
 
-      if (sudokuGame.startBoard[square] == 0) {
-        child->setText((QString::fromStdString("")));
-      } else {
-        child->setText((QString::fromStdString(std::to_string(sudokuGame.currentBoard[square]))));
-      }
+void SudokuPuzzle::setBoard() {
+    int squareIndex;
+    for (QLineEdit* square : sudokuSquares) {
+        squareIndex = objectToIndex(square);
+        if (sudokuGame.startBoard[squareIndex] == 0) {
+        square->setText((QString::fromStdString("")));
+        } else {
+        square->setText((QString::fromStdString(std::to_string(sudokuGame.currentBoard[squareIndex]))));
+        }
     }
 }
 
 void SudokuPuzzle::on_ResetButton_clicked() {
-    QWidget* boardWidget = centralWidget()->findChild<QWidget*>("widget");
-    QList<QLineEdit *> childList = boardWidget->findChildren<QLineEdit*>();
-
     sudokuGame.restartGame();
-    resetBoard(childList);
+    setBoard();
+    elapsedTime = 0;
+    clock.restart();
 }
 
 void SudokuPuzzle::on_PauseButton_clicked() {
-    QWidget* boardWidget = centralWidget()->findChild<QWidget*>("widget");
-    QList<QLineEdit *> childList = boardWidget->findChildren<QLineEdit*>();
-
     if (!isPaused) {
         elapsedTime += clock.elapsed();
         timer->stop();
         centralWidget()->findChild<QPushButton*>("PauseButton")->setText("Resume");
-        for (QLineEdit* child : childList) {
-            child->setReadOnly(true);
+        for (QLineEdit* square : sudokuSquares) {
+            square->setReadOnly(true);
         }
     } else {
         timer->start();
-        clock.start();
+        clock.restart();
         centralWidget()->findChild<QPushButton*>("PauseButton")->setText("Pause");
-        int count = 0;
-        for (QLineEdit* child : childList) {
-            if (sudokuGame.startBoard[count] == 0) {
-                child->setReadOnly(false);
+
+        int squareIndex;
+        for (QLineEdit* square : sudokuSquares) {
+            squareIndex = objectToIndex(square);
+            if (sudokuGame.startBoard[squareIndex] == 0) {
+                square->setReadOnly(false);
             }
-            count++;
         }
     }
     isPaused = !isPaused;
@@ -116,36 +110,28 @@ void SudokuPuzzle::updateTime() {
 }
 
 void SudokuPuzzle::updateModel() {
-    QLineEdit* squareObject = qobject_cast<QLineEdit*>(this->sender());
-    if (squareObject->objectName().length() == 7) {
-        QChar square = squareObject->objectName()[6];
-        int squareValue = squareObject->text().toInt();
-        sudokuGame.currentBoard[square.digitValue()] = squareValue;
-    } else {
-        QString square = squareObject->objectName().right(2);
-        int squareValue = squareObject->text().toInt();
-        sudokuGame.currentBoard[square.toInt()] = squareValue;
-    }
+    QLineEdit* square = qobject_cast<QLineEdit*>(this->sender());
+    int squareIndex = objectToIndex(square);
+    int squareValue = square->text().toInt();
+    sudokuGame.currentBoard[squareIndex] = squareValue;
+    
     if (sudokuGame.checkWin()) {
-        std::cout << "u did it";
+        QMessageBox::StandardButton gameOver;
+        gameOver = QMessageBox::question(this, "Puzzle Solved", "Puzzle Solved, start a new puzzle?", QMessageBox::Yes|QMessageBox::No);
         timer->stop();
+        // Add logic for new game
+        if (gameOver == QMessageBox::No) {
+            QApplication::quit();
+        }
     }
 }
 
 void SudokuPuzzle::on_SolveGame_clicked() {
     timer->stop();
     sudokuGame.solveGame();
-    QWidget* boardWidget = centralWidget()->findChild<QWidget*>("widget");
-    QList<QLineEdit *> childList = boardWidget->findChildren<QLineEdit*>();
-
-    for (QLineEdit* child : childList) {
-        int square;
-        if (child->objectName().length() == 7) {
-            square = child->objectName().right(1).toInt();
-        } else {
-            square = child->objectName().right(2).toInt();
-        }
-
-        child->setText((QString::fromStdString(std::to_string(sudokuGame.currentBoard[square]))));
+    int squareIndex;
+    for (QLineEdit* square : sudokuSquares) {
+        squareIndex = objectToIndex(square);
+        square->setText((QString::fromStdString(std::to_string(sudokuGame.currentBoard[squareIndex]))));
     }
 }

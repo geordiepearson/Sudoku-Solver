@@ -34,11 +34,14 @@ private:
     SudokuGame sudokuGame;
     QTimer* timer;
     QElapsedTimer clock;
+    QList<QLineEdit *> sudokuSquares;
     bool isPaused = false;
     qint64 elapsedTime = 0;
-    QIntValidator* digitFilter;
-    void resetBoard(QList<QLineEdit *> childList);
-    void initialiseBoard(QList<QLineEdit *> childList);
+    
+    void setBoard();
+    void initialiseBoard();
+    int objectToIndex(QLineEdit* square);
+    
 
 };
 

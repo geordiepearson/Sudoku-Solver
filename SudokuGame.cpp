@@ -3,6 +3,7 @@
 #include <algorithm>
 #include "SudokuSolver.h"
 #include "SudokuGame.h"
+#include "SudokuGenerator.h"
 
 void SudokuGame::printBoard() {
 	for (int i = 0; i < 81; i++) {
@@ -29,4 +30,12 @@ bool SudokuGame::checkWin() {
 	}
 	return false;
 }
-
+/*
+int main () {
+	SudokuGenerator sudokuGenerator;
+	SudokuGame sudokuGame;
+	
+	sudokuGenerator.selectSquare(sudokuGame.currentBoard);
+    std::cout << "yeet";
+    sudokuGame.printBoard();
+}*/
