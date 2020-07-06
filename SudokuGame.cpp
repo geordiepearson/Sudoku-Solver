@@ -5,9 +5,13 @@
 #include "SudokuGame.h"
 #include "SudokuGenerator.h"
 
+#include <iterator>
+#include <cstdlib>
+#include <ctime>
+
 void SudokuGame::printBoard() {
-	for (int i = 0; i < 81; i++) {
-		if (i % 9 == 0 && i != 0) {
+	for (int i = 0; i < 81; i++) 
+		{if (i % 9 == 0 && i != 0) {
 			std::cout << "\n";
 		}
 		std::cout << currentBoard[i] << " ";
@@ -30,12 +34,17 @@ bool SudokuGame::checkWin() {
 	}
 	return false;
 }
-/*
+
 int main () {
 	SudokuGenerator sudokuGenerator;
 	SudokuGame sudokuGame;
-	
-	sudokuGenerator.selectSquare(sudokuGame.currentBoard);
-    std::cout << "yeet";
+	srand(time(0));
+	int starter = (rand() % 9) + 1;
+	sudokuGenerator.selectSquare(sudokuGame.startBoard, starter);
+	sudokuGame.currentBoard = sudokuGame.startBoard;
     sudokuGame.printBoard();
-}*/
+    std::cout << "\n\n";
+    
+    sudokuGame.solveGame();
+    sudokuGame.printBoard();
+}

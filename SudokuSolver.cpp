@@ -139,6 +139,15 @@ void SudokuSolver::solveSquare(int squareIndex, std::vector<int>
 
 void SudokuSolver::solveBoard(int startingIndex, std::vector<int> &startBoard, 
 	std::vector<int> &currentBoard) {
+	/*
+	for (int i = 0; i < 81; i++) 
+		{if (i % 9 == 0 && i != 0) {
+			std::cout << "\n";
+		}
+		std::cout << currentBoard[i] << " ";
+	}
+	std::cout << "\n\n";*/
+
 	// Vector to store the valid values a square can take
 	std::vector<int> potentialValues;
 	if (isSolved == true) {

@@ -5,7 +5,7 @@
 
 class SudokuGenerator {
 public:
-	void selectSquare(std::vector<int> &board);
+	void selectSquare(std::vector<int> &board, int squareValue);
 
 private:
 	std::vector<int> avaliableRows {1, 2, 3, 4, 5, 6, 7, 8, 9};

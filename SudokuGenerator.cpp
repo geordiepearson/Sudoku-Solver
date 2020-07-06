@@ -5,9 +5,10 @@
 #include <cstdlib>
 #include "SudokuGenerator.h"
 #include <ctime>
-/*
-void SudokuGenerator::selectSquare(std::vector<int> &board) {
-	srand(time(0));
+
+void SudokuGenerator::selectSquare(std::vector<int> &board, int squareValue) {
+	avaliableRows  = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+	avaliableBoxes = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 	bool foundRow;
 	bool foundBox;
 	int row;
@@ -22,7 +23,7 @@ void SudokuGenerator::selectSquare(std::vector<int> &board) {
 		while (!foundRow || !foundBox) {
 			foundRow = false;
 			foundBox = false;
-			row = avaliableRows[(rand() % (avaliableRows.size() - 1))];
+			row = avaliableRows[rand() % avaliableRows.size()];
 			rowThing = std::find(avaliableRows.begin(), avaliableRows.end(), row);
 			if (rowThing != avaliableRows.end()) {
 				rowIndex = std::distance(avaliableRows.begin(), rowThing);
@@ -30,42 +31,40 @@ void SudokuGenerator::selectSquare(std::vector<int> &board) {
 			}
 		
 			if (column < 4) {
-				if (row + 1 < 4) {
+				if (row < 4) {
 					box = 1;
-				} else if (row + 1 < 7) {
+				} else if (row < 7) {
 					box = 4;
-				} else if (row + 1 < 10) {
+				} else if (row < 10) {
 					box = 7;
 				}
 			} else if (column < 7) {
-				if (row + 1 < 4) {
+				if (row < 4) {
 					box = 2;
-				} else if (row + 1 < 7) {
+				} else if (row < 7) {
 					box = 5;
-				} else if (row + 1 < 10) {
+				} else if (row < 10) {
 					box = 8;
 				}
 			} else if (column < 10) {
-				if (row + 1 < 4) {
+				if (row < 4) {
 					box = 3;
-				} else if (row + 1 < 7) {
+				} else if (row < 7) {
 					box = 6;
-				} else if (row + 1 < 10) {
+				} else if (row < 10) {
 				box = 9;
 				}
 			}
 			
 			boxThing = std::find(avaliableBoxes.begin(), avaliableBoxes.end(), box);
-			if (boxThing != avaliableBoxes.end()) {
-				boxIndex = std::distance(avaliableBoxes.end(), boxThing);
+			if (boxThing != avaliableBoxes.end() && board[(row - 1) * 9 + column - 1] == 0) {
+				boxIndex = std::distance(avaliableBoxes.begin(), boxThing);
 				foundBox = true;
 			}
-			std::cout << " (" << column << " " << row + 1 << " " << box << ") ";
 		}
-		std::cout << "yeet";
 		avaliableRows.erase(avaliableRows.begin() + rowIndex);
-		avaliableBoxes.erase(avaliableBoxes.begin() + rowIndex);
-		//board[(row - 1) * 8 + column] = 1;
+		avaliableBoxes.erase(avaliableBoxes.begin() + boxIndex);
+		board[(row - 1) * 9 + column - 1] = squareValue;
 	}
 }
-*/
+
