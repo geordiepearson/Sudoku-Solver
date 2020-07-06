@@ -3,7 +3,10 @@
 #include <algorithm>
 #include <iterator>
 #include <cstdlib>
+#include <fstream>
+#include <string>
 #include "SudokuGenerator.h"
+#include "SudokuGame.h"
 #include <ctime>
 
 void SudokuGenerator::selectSquare(std::vector<int> &board, int squareValue) {
@@ -68,3 +71,61 @@ void SudokuGenerator::selectSquare(std::vector<int> &board, int squareValue) {
 	}
 }
 
+void SudokuGenerator::createPuzzle(SudokuGame &sudokuGame) {
+	srand(time(0));
+
+	int starter1 = (rand() % 9) + 1;
+	selectSquare(sudokuGame.startBoard, starter1);
+	sudokuGame.currentBoard = sudokuGame.startBoard;
+  
+    sudokuGame.solveGame();
+    sudokuGame.gameMode = false;
+
+    int indexToRemove;
+    int removedValue;
+    std::vector<int> tempBoard = sudokuGame.currentBoard;
+    sudokuGame.solvedBoard = tempBoard;
+    do {
+    	indexToRemove = rand() % 81;
+    	removedValue = sudokuGame.startBoard[indexToRemove];
+
+    	sudokuGame.currentBoard[indexToRemove] = 0;
+    	sudokuGame.startBoard = sudokuGame.currentBoard;
+    	tempBoard = sudokuGame.currentBoard;
+    	sudokuGame.solveGame();
+
+    	sudokuGame.currentBoard = tempBoard;
+    	sudokuGame.startBoard = tempBoard;
+
+    	if (sudokuGame.counter != 1) {
+    		sudokuGame.currentBoard[indexToRemove] = removedValue;
+    		sudokuGame.startBoard = sudokuGame.currentBoard;
+    	}
+    }
+    while (sudokuGame.counter == 1);
+}
+
+void SudokuGenerator::createPuzzleFile() {
+	SudokuGame sudokuGame;
+	std::ofstream puzzleFile("./SudokuPuzzles/" + sudokuGame.title + ".txt");
+	puzzleFile << sudokuGame.title << "\n\n";
+
+	createPuzzle(sudokuGame);
+
+	for (int i = 0; i < 81; i++) {
+		if (i % 9 == 0 && i != 0) {
+			puzzleFile << "\n";
+		}
+		puzzleFile << sudokuGame.currentBoard[i] << " ";
+	}
+
+	puzzleFile << "\n\n";
+
+	for (int i = 0; i < 81; i++) {
+		if (i % 9 == 0 && i != 0) {
+			puzzleFile << "\n";
+		}
+		puzzleFile << sudokuGame.solvedBoard[i] << " ";
+	}
+	puzzleFile.close();
+}

@@ -24,7 +24,8 @@ void SudokuGame::restartGame() {
 
 void SudokuGame::solveGame() {
 	SudokuSolver sudokusolver;
-	sudokusolver.solveBoard(0, startBoard, currentBoard);
+	counter = 0;
+	sudokusolver.solveBoard(0, startBoard, currentBoard, counter, gameMode);
 }
 
 bool SudokuGame::checkWin() {
@@ -33,18 +34,4 @@ bool SudokuGame::checkWin() {
 		return true;
 	}
 	return false;
-}
-
-int main () {
-	SudokuGenerator sudokuGenerator;
-	SudokuGame sudokuGame;
-	srand(time(0));
-	int starter = (rand() % 9) + 1;
-	sudokuGenerator.selectSquare(sudokuGame.startBoard, starter);
-	sudokuGame.currentBoard = sudokuGame.startBoard;
-    sudokuGame.printBoard();
-    std::cout << "\n\n";
-    
-    sudokuGame.solveGame();
-    sudokuGame.printBoard();
 }

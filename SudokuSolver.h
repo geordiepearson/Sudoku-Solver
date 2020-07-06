@@ -61,7 +61,7 @@ public:
 	//  - startBoard: The sudoku board at the start of the puzzle
 	//  - currentBoard: The current Sudoku board
 	void solveBoard(int startingIndex, std::vector<int> &startBoard, 
-		std::vector<int> &currentBoard);
+		std::vector<int> &currentBoard, int &counter, bool gameMode);
 };
 
 #endif /*SUDOKUSOLVE_H_*/
