@@ -6,6 +6,7 @@
 #include <QTimer>
 #include <QElapsedTimer>
 #include <QIntValidator>
+#include "SudokuGenerator.h"
 
 namespace Ui {
 class SudokuPuzzle;
@@ -17,6 +18,13 @@ class SudokuPuzzle : public QMainWindow {
 public:
     explicit SudokuPuzzle(QWidget *parent = nullptr);
     ~SudokuPuzzle();
+    void loadGame(std::ifstream& puzzleFile);
+    SudokuGame sudokuGame;
+    void setBoard();
+    void startClock();
+
+public slots:
+   void on_LoadButton_clicked();
 
 private slots:
     void on_ResetButton_clicked();
@@ -29,20 +37,22 @@ private slots:
 
     void on_SolveGame_clicked();
 
+    void on_SaveButton_clicked();
+
+    void on_NewButton_clicked();
+
 private:
     Ui::SudokuPuzzle* ui;
-    SudokuGame sudokuGame;
+    SudokuGenerator* sudokuGenerator;
     QTimer* timer;
     QElapsedTimer clock;
     QList<QLineEdit *> sudokuSquares;
     bool isPaused = false;
     qint64 elapsedTime = 0;
     
-    void setBoard();
+
     void initialiseBoard();
     int objectToIndex(QLineEdit* square);
-    
-
 };
 
 #endif // SUDOKUPUZZLE_H

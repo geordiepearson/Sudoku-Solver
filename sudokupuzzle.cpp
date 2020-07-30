@@ -1,19 +1,17 @@
 #include "sudokupuzzle.h"
 #include "ui_sudokupuzzle.h"
 #include "SudokuGame.h"
-#include "SudokuSolver.h"
+#include "SudokuGenerator.h"
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <QApplication>
 #include <QMessageBox>
+#include <QFile>
+#include <QTextStream>
+#include <QDir>
+#include <QFileDialog>
 
-/*
-    Check for win UI
-
-    Sudoku Solver run in separate thread
-
-    disable buttons on solve and win
-*/
 
 SudokuPuzzle::SudokuPuzzle(QWidget *parent):
     QMainWindow(parent),
@@ -22,14 +20,19 @@ SudokuPuzzle::SudokuPuzzle(QWidget *parent):
 
     this->sudokuSquares = (centralWidget()->findChild<QWidget*>("widget"))->findChildren<QLineEdit*>();
     initialiseBoard();
-    timer = new QTimer();
-    connect(timer, SIGNAL(timeout()), SLOT(updateTime()));
-    timer->start(100);
-    clock.start();
 }
 
 SudokuPuzzle::~SudokuPuzzle() {
     delete ui;
+}
+
+void SudokuPuzzle::startClock() {
+    timer = new QTimer();
+    connect(timer, SIGNAL(timeout()), SLOT(updateTime()));
+    elapsedTime = this->sudokuGame.time;
+    timer->start(100);
+    clock.start();
+
 }
 
 int SudokuPuzzle::objectToIndex(QLineEdit* square) {
@@ -43,15 +46,8 @@ int SudokuPuzzle::objectToIndex(QLineEdit* square) {
 }
 
 void SudokuPuzzle::initialiseBoard() {
-    int squareIndex;
     for (QLineEdit* square: sudokuSquares) {
         square->setValidator(new QRegExpValidator(QRegExp("[1-9]")));
-        squareIndex = objectToIndex(square);
-        if (sudokuGame.startBoard[squareIndex] != 0) {
-            square->setText((QString::fromStdString(std::to_string(sudokuGame.startBoard[squareIndex]))));
-            square->setStyleSheet("color:blue");
-            square->setReadOnly(true);
-        }
         connect(square, SIGNAL(textEdited(const QString&)), SLOT(updateModel()));
     }
     setBoard();
@@ -61,10 +57,14 @@ void SudokuPuzzle::setBoard() {
     int squareIndex;
     for (QLineEdit* square : sudokuSquares) {
         squareIndex = objectToIndex(square);
-        if (sudokuGame.startBoard[squareIndex] == 0) {
-        square->setText((QString::fromStdString("")));
+        if (sudokuGame.currentBoard[squareIndex] == 0) {
+            square->setText((QString::fromStdString("")));
         } else {
-        square->setText((QString::fromStdString(std::to_string(sudokuGame.currentBoard[squareIndex]))));
+            square->setText((QString::fromStdString(std::to_string(sudokuGame.currentBoard[squareIndex]))));
+            if (sudokuGame.startBoard[squareIndex] != 0) {
+                square->setStyleSheet("color:blue");
+                square->setReadOnly(true);
+            }
         }
     }
 }
@@ -117,21 +117,103 @@ void SudokuPuzzle::updateModel() {
     
     if (sudokuGame.checkWin()) {
         QMessageBox::StandardButton gameOver;
-        gameOver = QMessageBox::question(this, "Puzzle Solved", "Puzzle Solved, start a new puzzle?", QMessageBox::Yes|QMessageBox::No);
+        gameOver = QMessageBox::question(this, "Puzzle Solved", "Puzzle Solved. Start a new puzzle?", QMessageBox::Yes|QMessageBox::No);
         timer->stop();
-        // Add logic for new game
         if (gameOver == QMessageBox::No) {
             QApplication::quit();
+        } else {
+            SudokuPuzzle* sudokuPuzzle = new SudokuPuzzle();
+            sudokuGenerator = new SudokuGenerator();
+            sudokuGenerator->createPuzzleFile(sudokuPuzzle->sudokuGame);
+            delete sudokuGenerator;
+            sudokuPuzzle->setBoard();
+            sudokuPuzzle->show();
+            this->close();
         }
     }
 }
 
 void SudokuPuzzle::on_SolveGame_clicked() {
     timer->stop();
-    sudokuGame.solveGame();
     int squareIndex;
     for (QLineEdit* square : sudokuSquares) {
         squareIndex = objectToIndex(square);
-        square->setText((QString::fromStdString(std::to_string(sudokuGame.currentBoard[squareIndex]))));
+        square->setText((QString::fromStdString(std::to_string(sudokuGame.solvedBoard[squareIndex]))));
     }
+    QMessageBox::StandardButton gameOver;
+    gameOver = QMessageBox::question(this, "Puzzle Solved", "Puzzle Solved. Start a new puzzle?", QMessageBox::Yes|QMessageBox::No);
+    timer->stop();
+
+    if (gameOver == QMessageBox::No) {
+        QApplication::quit();
+    } else {
+        SudokuPuzzle* sudokuPuzzle = new SudokuPuzzle();
+        sudokuGenerator = new SudokuGenerator();
+        sudokuGenerator->createPuzzleFile(sudokuPuzzle->sudokuGame);
+        delete sudokuGenerator;
+        sudokuPuzzle->setBoard();
+        sudokuPuzzle->show();
+        sudokuPuzzle->startClock();
+        this->close();
+    }
+}
+
+void SudokuPuzzle::on_SaveButton_clicked() {
+    sudokuGame.time = clock.elapsed() + elapsedTime;
+    sudokuGame.saveGame();
+}
+
+void SudokuPuzzle::loadGame(std::ifstream& puzzleFile) {
+    int line = 0;
+    std::string currentLine;
+    while(std::getline(puzzleFile, currentLine)) {
+        if (line == 0) {
+            sudokuGame.title = currentLine;
+        } else if (line == 1) {
+            sudokuGame.time = stoi(currentLine);
+        } else if (line > 2 && line < 12) {
+            for (int square = 0; square < 9; square++) {
+                int value = (int) currentLine[2 * square] - 48;
+                sudokuGame.startBoard[square + (line - 3) * 9] = value;
+            }
+        } else if (line > 12 && line < 22) {
+            for (int square = 0; square < 9; square++) {
+                int value = (int) currentLine[2 * square] - 48;
+                sudokuGame.currentBoard[square + (line - 13) * 9] = value;
+            }
+        } else if (line > 22 && line < 32) {
+            for (int square = 0; square < 9; square++) {
+                int value = (int) currentLine[2 * square] - 48;
+                sudokuGame.solvedBoard[square + (line - 23) * 9] = value;
+            }
+        }
+        line++;
+    }
+}
+
+void SudokuPuzzle::on_LoadButton_clicked() {
+    elapsedTime += clock.elapsed();
+    timer->stop();
+    SudokuPuzzle* sudokuPuzzle = new SudokuPuzzle();
+    QFileDialog loadFile(sudokuPuzzle);
+    QString fileName = loadFile.getOpenFileName(sudokuPuzzle, tr("Open File"), "/path/to/file/",tr("Text Files (*.txt)"));
+
+    std::ifstream puzzleFile(fileName.toStdString());
+    sudokuPuzzle->loadGame(puzzleFile);
+    sudokuPuzzle->setBoard();
+    centralWidget()->findChild<QLabel*>("GameTitle")->setText(QString::fromStdString(sudokuGame.title));
+    sudokuPuzzle->show();
+    sudokuPuzzle->startClock();
+    this->close();
+}
+
+void SudokuPuzzle::on_NewButton_clicked() {
+    SudokuPuzzle* sudokuPuzzle = new SudokuPuzzle();
+    sudokuGenerator = new SudokuGenerator();
+    sudokuGenerator->createPuzzleFile(sudokuPuzzle->sudokuGame);
+    delete sudokuGenerator;
+    sudokuPuzzle->setBoard();
+    sudokuPuzzle->show();
+    sudokuPuzzle->startClock();
+    this->close();
 }

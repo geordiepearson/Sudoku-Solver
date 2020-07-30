@@ -10,50 +10,26 @@
 class SudokuGame {
 public:
 	// A model of the original Sudoku puzzle
-	std::vector<int> startBoard {
-		0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0
-		};
-	// A model of the Sudoku Puzzle at the current moment
-	std::vector<int> currentBoard {
-		2, 9, 5, 7, 4, 3, 8, 6, 1,
-		4, 3, 1, 8, 6, 5, 9, 0, 0,
-		8, 7, 6, 1, 9, 2, 5, 4, 3,
-		3, 8, 7, 4, 5, 9, 2, 1, 6,
-		6, 1, 2, 3, 8, 7, 4, 9, 5,
-		5, 4, 9, 2, 1, 6, 7, 3, 8,
-		7, 6, 3, 5, 3, 4, 1, 8, 9,
-		9, 2, 8, 6, 7, 1, 3, 5, 4,
-		1, 5, 4, 9, 3, 8, 6, 0, 0
-		};
-	
-	std::vector<int> solvedBoard {
-		0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0
-		};
-
+    std::vector<int> startBoard = std::vector<int>(81);
+    // A model of the Sudoku puzzle at the current moment.
+    std::vector<int> currentBoard = std::vector<int>(81);
+    // A model of the Sudoku puzzle when solved.
+    std::vector<int> solvedBoard = std::vector<int>(81);
+	// The current state of the game with 
 	bool gameMode = true;
-	int counter;
+    int counter;
 	std::string title = "Let's Play Sudoku";
+    int time = 0;
+
 	void printBoard();
 	
 	void restartGame();
 
 	void solveGame();
+
+	void saveGame();
+
+	void loadGame();
 
 	bool checkWin();
 
