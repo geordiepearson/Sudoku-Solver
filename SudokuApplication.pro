@@ -26,6 +26,7 @@ SOURCES += \
 HEADERS += \
     SudokuGame.h \
     SudokuGenerator.h \
+    SudokuSolver.h \
     mainmenu.h \
     sudokupuzzle.h
 

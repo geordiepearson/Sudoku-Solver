@@ -23,18 +23,20 @@ private slots:
     // Generates a random, valid sudoku puzzle. Then closes the current window
     // and opens a SudokuPuzzle window with the newly created puzzle.
     void on_StartButton_clicked();
+
     // Closes the current window and creates and opens a new Sudoku builder 
     // window.
     void on_CreateButton_clicked();
+    
     // Opens a file explorer and creates a Sudoku Puzzle window based on the 
     // selected text file .
     void on_LoadButton_clicked();
 
 private:
     Ui::MainMenu *ui;
-    // Declare sudokuPuzzle and sudokuGenerator pointers to store dynamically 
+    // Declared sudokuPuzzle and sudokuGenerator pointers to store dynamically 
     // created instances
     SudokuPuzzle* sudokuPuzzle;
-    SudokuGenerator* sudokuGenerator;
+    SudokuGenerator sudokuGenerator;
 };
 #endif // MAINMENU_H

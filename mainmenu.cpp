@@ -2,6 +2,7 @@
 #include "ui_mainmenu.h"
 #include "sudokupuzzle.h"
 #include "SudokuGenerator.h"
+
 #include <QPushButton>
 #include <QFileDialog>
 #include <fstream>
@@ -18,14 +19,12 @@ MainMenu::~MainMenu() {
 
 void MainMenu::on_StartButton_clicked() {
     sudokuPuzzle = new SudokuPuzzle();
-    sudokuGenerator = new SudokuGenerator();
-    sudokuGenerator->createPuzzleFile(sudokuPuzzle->sudokuGame);
-    delete sudokuGenerator;
+    sudokuGenerator.createPuzzleFile(sudokuPuzzle->sudokuGame);
     // Sets the sudokuPuzzle window ready to be used
     sudokuPuzzle->setBoard();
     sudokuPuzzle->show();
     sudokuPuzzle->startClock();
-    this->close();
+    this->destroy();
 }
 
 
@@ -42,11 +41,7 @@ void MainMenu::on_LoadButton_clicked() {
         "/path/to/file/",tr("Text Files (*.txt)"));
     // Loads the given file and sets the sudokuPuzzle window ready to be used
     if (!fileName.isEmpty() && !fileName.isNull()) {
-        std::ifstream puzzleFile(fileName.toStdString());
-        sudokuPuzzle->loadGame(puzzleFile);
-        sudokuPuzzle->setBoard();
-        sudokuPuzzle->show();
-        sudokuPuzzle->startClock();
-        this->close();
+        sudokuPuzzle->loadGame(fileName);
+        this->destroy();
     }
 }

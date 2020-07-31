@@ -1,6 +1,9 @@
 #ifndef SUDOKUSOLVE_H_
 #define SUDOKUSOLVE_H_
 
+#include <vector>
+#include <string>
+
 /*A class used to compute the solution of a Sudoku puzzle*/
 class SudokuSolver {
 private:
@@ -28,7 +31,7 @@ private:
 	// a vector with the valid values that could be placed into this box.
 	//
 	// Parameters:
-	//	- squareIndex: The index of a square on the Sudoku board. The 3 by 
+	//  - squareIndex: The index of a square on the Sudoku board. The 3 by 
 	//	  3 box that contains this square will be checked for possible 
 	//  	valid values 
 	//	- validValues: Vector of valid values that could be inserted into 
@@ -60,6 +63,10 @@ public:
 	// 	  from
 	//  - startBoard: The sudoku board at the start of the puzzle
 	//  - currentBoard: The current Sudoku board
+	//  - counter: The count of valid solutions to the Sudoku board
+	//  - gameMode: The mode the sudokuSolver is currently in with:
+	//    - true: Solves for the first solution to the Sudoku board
+	//    - false: Solves for every solution to the Sudoku board
 	void solveBoard(int startingIndex, std::vector<int> &startBoard, 
 		std::vector<int> &currentBoard, int &counter, bool gameMode);
 };
