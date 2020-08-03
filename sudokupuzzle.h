@@ -22,7 +22,7 @@ class SudokuPuzzle : public QMainWindow {
 public:
     explicit SudokuPuzzle(QWidget *parent = nullptr);
     ~SudokuPuzzle();
-    // The instance of the sudokuGame model that is being manipulated.   
+    // The instance of the sudokuGame model that is being manipulated.
     SudokuGame sudokuGame;
 
     // Sets the text of each QLineEdit with the corresponding value from the
@@ -40,15 +40,15 @@ public:
     // Parameters:
     //  - fileName: The name of the file to read from
     void loadGame(QString fileName);
-   
+protected slots:
+    // Resets the SudokuGame model and restarts the clock.
+    void on_ResetButton_clicked();
+
 private slots:
     // Creates a new sudokuPuzzle instance and opens a new file explorer. Then 
     // loads the selected text file's parameters into the model of the newly 
     // created SudokuPuzzle instance and closes the current SudokuPuzzle instance.
     void on_LoadButton_clicked();
-    
-    // Resets the SudokuGame model and restarts the clock.
-    void on_ResetButton_clicked();
 
     // Toggles the SudokuPuzzle between paused and active. While paused, all of 
     // the squares are set to read only mode and the clock is stopped. When the

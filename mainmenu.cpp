@@ -2,7 +2,9 @@
 #include "ui_mainmenu.h"
 #include "sudokupuzzle.h"
 #include "SudokuGenerator.h"
+#include "sudokucreator.h"
 
+#include <iostream>
 #include <QPushButton>
 #include <QFileDialog>
 #include <fstream>
@@ -24,12 +26,14 @@ void MainMenu::on_StartButton_clicked() {
     sudokuPuzzle->setBoard();
     sudokuPuzzle->show();
     sudokuPuzzle->startClock();
-    this->destroy();
+    this->close();
 }
 
 
 void MainMenu::on_CreateButton_clicked() {
-
+    sudokuCreator = new SudokuCreator();
+    sudokuCreator->show();
+    this->close();
 }
 
 
@@ -42,6 +46,6 @@ void MainMenu::on_LoadButton_clicked() {
     // Loads the given file and sets the sudokuPuzzle window ready to be used
     if (!fileName.isEmpty() && !fileName.isNull()) {
         sudokuPuzzle->loadGame(fileName);
-        this->destroy();
+        this->close();
     }
 }

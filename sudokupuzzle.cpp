@@ -182,7 +182,7 @@ void SudokuPuzzle::on_LoadButton_clicked() {
     
     if (!fileName.isEmpty() && !fileName.isNull()) {
         sudokuPuzzle->loadGame(fileName);
-        this->destroy();
+        this->close();
     } else {
         timer->start();
         clock.restart();
@@ -195,5 +195,5 @@ void SudokuPuzzle::on_NewButton_clicked() {
     sudokuPuzzle->setBoard();
     sudokuPuzzle->show();
     sudokuPuzzle->startClock();
-    this->destroy();
+    this->close();
 }

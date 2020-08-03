@@ -61,14 +61,17 @@ public:
 	// Parameters:
 	//  - startingIndex: The index on the Sudoku board to start solving 
 	// 	  from
-	//  - startBoard: The sudoku board at the start of the puzzle
+	//  - startBoard: The Sudoku board at the start of the puzzle
 	//  - currentBoard: The current Sudoku board
+	//  - solvedBoard: The solved version of the current Sudoku puzzle
 	//  - counter: The count of valid solutions to the Sudoku board
 	//  - gameMode: The mode the sudokuSolver is currently in with:
 	//    - true: Solves for the first solution to the Sudoku board
 	//    - false: Solves for every solution to the Sudoku board
+	//    - NULL: Checks if there is more then 1 valid solution
 	void solveBoard(int startingIndex, std::vector<int> &startBoard, 
-		std::vector<int> &currentBoard, int &counter, bool gameMode);
+        std::vector<int> &currentBoard, std::vector<int>&solvedBoard, 
+        int &counter, bool gameMode);
 };
 
 #endif /*SUDOKUSOLVE_H_*/

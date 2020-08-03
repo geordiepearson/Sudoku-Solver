@@ -21,6 +21,7 @@ SOURCES += \
     SudokuSolver.cpp \
     main.cpp \
     mainmenu.cpp \
+    sudokucreator.cpp \
     sudokupuzzle.cpp
 
 HEADERS += \
@@ -28,10 +29,12 @@ HEADERS += \
     SudokuGenerator.h \
     SudokuSolver.h \
     mainmenu.h \
+    sudokucreator.h \
     sudokupuzzle.h
 
 FORMS += \
     mainmenu.ui \
+    sudokucreator.ui \
     sudokupuzzle.ui
 
 # Default rules for deployment.

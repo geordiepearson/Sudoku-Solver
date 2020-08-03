@@ -21,9 +21,10 @@ public:
     // A model of the Sudoku puzzle when solved.
     std::vector<int> solvedBoard = std::vector<int>(BOARD_SIZE);
 	// The current state of the Sudoku game solver with:
-	//   - true: solving for the first possible valid solution
-	//   - false: solving for every possible valid solution 
-	bool solverMode = true;
+    //   - true: Solving for the first possible valid solution
+    //   - false: Solving for every possible valid solution
+    //   - NULL: Checking if there is more then 1 valid solution
+    bool solverMode = true;
 	// The number of valid solutions that the current Sudoku puzzle has
     int solutionCounter;
 	// The amount of time passed since beginning the of the puzzle in 

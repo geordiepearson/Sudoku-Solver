@@ -20,8 +20,8 @@ void SudokuGame::restartGame() {
 void SudokuGame::solveGame() {
 	SudokuSolver sudokusolver;
     solutionCounter = 0;
-    sudokusolver.solveBoard(0, startBoard, currentBoard, solutionCounter, 
-        solverMode);
+    sudokusolver.solveBoard(0, startBoard, currentBoard, solvedBoard, 
+        solutionCounter, solverMode);
 }
 
 bool SudokuGame::checkWin() {
@@ -47,12 +47,12 @@ void SudokuGame::saveGame() {
     GetModuleFileName(NULL, buffer, MAX_PATH);
     std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
     std::string directory = converter.to_bytes(buffer);
-    std::size_t pos = directory.find("SudokuApplication");
+    std::size_t pos = directory.find("SudokuReleaseBuild");
 
     // Alters the filepath to the directory SudokuPuzzles
-    directory = directory.substr(0, pos + 17);
+    directory = directory.substr(0, pos + 18);
     std::string fileName = this->title + ".txt";
-    directory = directory + "/SudokuPuzzles/" + fileName;
+    directory = directory + "/release/SudokuPuzzles/" + fileName;
 
     // Creates the file in the directory and writes to it
     std::ofstream puzzleFile(directory);

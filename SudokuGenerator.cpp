@@ -85,8 +85,10 @@ void SudokuGenerator::placeValue(std::vector<int> &board, int squareValue) {
 			box = convertToBox(row, column);
 			// Checks if the corresponding box is in the vector of avaliable 
 			// boxes.
-			validChecker = std::find(avaliableBoxes.begin(), avaliableBoxes.end(), box);
-			if (validChecker != avaliableBoxes.end() && board[(row - 1) * 9 + column - 1] == 0) {
+			validChecker = std::find(avaliableBoxes.begin(), 
+				avaliableBoxes.end(), box);
+			if (validChecker != avaliableBoxes.end() && 
+				board[(row - 1) * 9 + column - 1] == 0) {
                 boxIndex = std::distance(avaliableBoxes.begin(), validChecker);
 				foundBox = true;
 			}
@@ -107,7 +109,7 @@ void SudokuGenerator::createPuzzle(SudokuGame &sudokuGame) {
     placeValue(sudokuGame.startBoard, squareValue);
 	sudokuGame.currentBoard = sudokuGame.startBoard;
     sudokuGame.solveGame();
-
+    
     sudokuGame.solverMode = false;
     // The index of the value to remove from the Sudoku board.
     int indexToRemove;

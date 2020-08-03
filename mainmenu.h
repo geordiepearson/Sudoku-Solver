@@ -1,14 +1,17 @@
 #ifndef MAINMENU_H
 #define MAINMENU_H
 
+#include <QMainWindow>
+
 #include "sudokupuzzle.h"
 #include "SudokuGenerator.h"
-
-#include <QMainWindow>
+#include "sudokucreator.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainMenu; }
 QT_END_NAMESPACE
+
+class SudokuCreator;
 
 /*A class to to handle the UI and interactions by the user with the applications
  main menu */
@@ -34,9 +37,10 @@ private slots:
 
 private:
     Ui::MainMenu *ui;
-    // Declared sudokuPuzzle and sudokuGenerator pointers to store dynamically 
+    // Declared sudokuPuzzle and sudokuCreator pointers to store dynamically 
     // created instances
     SudokuPuzzle* sudokuPuzzle;
+    SudokuCreator* sudokuCreator;
     SudokuGenerator sudokuGenerator;
 };
 #endif // MAINMENU_H
