@@ -47,13 +47,14 @@ void SudokuGame::saveGame() {
     GetModuleFileName(NULL, buffer, MAX_PATH);
     std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
     std::string directory = converter.to_bytes(buffer);
-    std::size_t pos = directory.find("SudokuReleaseBuild");
+    std::size_t pos = directory.find("release");
 
     // Alters the filepath to the directory SudokuPuzzles
-    directory = directory.substr(0, pos + 18);
+    directory = directory.substr(0, pos + 7);
+    std::cout << directory << "\n\n";
     std::string fileName = this->title + ".txt";
-    directory = directory + "/release/SudokuPuzzles/" + fileName;
-
+    directory = directory + "/SudokuPuzzles/" + fileName;
+    std::cout << directory << "\n\n";
     // Creates the file in the directory and writes to it
     std::ofstream puzzleFile(directory);
     puzzleFile << this->title << "\n";
